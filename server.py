@@ -4,7 +4,6 @@ from waitress import serve
 import flask
 from flask import Flask, Response, make_response, request, jsonify
 from flask_cors import CORS
-from waitress import serve
 import json
 
 
