@@ -1,24 +1,35 @@
 import os
 from argparse import ArgumentParser
+import torch
+from constant import CHECK_POINT
+from transformers import AutoTokenizer, AutoModelForSequenceClassification, TextClassificationPipeline
+
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument("--batch-size", default=64, type=int)
-    parser.add_argument("--epochs", default=1000, type=int)
-
-    # FIXME
+    parser.add_argument("--model-path", default='./model/DistilBert', type=str)
     args = parser.parse_args()
 
-    # FIXME
-    # Project Description
+    print('---------------------Welcome to ProtonX DistilBert-------------------')
+    
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    loaded_model = AutoModelForSequenceClassification.from_pretrained(args.model_path)
+    loaded_model.to(device)
 
-    print('---------------------Welcome to ${name}-------------------')
-    print('Github: ${accout}')
-    print('Email: ${email}')
-    print('---------------------------------------------------------------------')
-    print('Training ${name} model with hyper-params:') # FIXME
-    print('===========================')
+    device_index = loaded_model.device.index if loaded_model.device.type != 'cpu' else -1
+    auto_tokenizer = AutoTokenizer.from_pretrained(CHECK_POINT)
 
-    # FIXME
-    # Do Training
+    classifier = TextClassificationPipeline(
+        model=loaded_model,
+        tokenizer=auto_tokenizer, 
+        device=device_index
+    )
+    loaded_model.config.id2label = {0: 'Negative', 1: 'Positive'}
+
+    text = input("Input text to analyze sentiment: ")
+    while text != 'q':
+        sent, prob = classifier(text)[0]['label'], 100*classifier(text)[0]['score']
+        print(f"{sent} sentiment: {prob:.2f}%")
+        text = input("Input text to analyze sentiment: ")
+    
 
