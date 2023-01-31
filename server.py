@@ -5,7 +5,9 @@ import flask
 from flask import Flask, Response, make_response, request, jsonify
 from flask_cors import CORS
 import json
-
+import torch
+from constant import CHECK_POINT
+from transformers import AutoTokenizer, AutoModelForSequenceClassification, TextClassificationPipeline
 
 # TODO 1
 # Khởi tạo app flask
@@ -20,6 +22,38 @@ def get_model_info():
     result_dict = {
         "accuracy": 100.0,
         "loss": 0.0
+    }
+    return jsonify(result_dict)
+
+
+# TODO 2: Tạo route /api/v1/predict
+# Khi client gọi POST, lay noi dung { "review": "xxx" } tu request body va tra ve ket qua prediction sentiment va score 
+@app.route('/api/v1/predict', methods=['POST'])
+def post_predict():
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    model_path = './model/DistilBert'
+    loaded_model = AutoModelForSequenceClassification.from_pretrained(model_path)
+    loaded_model.to(device)
+
+    device_index = loaded_model.device.index if loaded_model.device.type != 'cpu' else -1
+    auto_tokenizer = AutoTokenizer.from_pretrained(CHECK_POINT)
+
+    classifier = TextClassificationPipeline(
+        model=loaded_model,
+        tokenizer=auto_tokenizer, 
+        device=device_index
+    )
+    loaded_model.config.id2label = { 0: 'Negative', 1: 'Positive' }
+
+    data = request.get_json()
+    review = data.get('review', '')
+    if not review:
+        return jsonify({ "error": "review text is not provided" }), 400
+        
+    sent, prob = classifier(review)[0]['label'], 100*classifier(review)[0]['score']
+    result_dict = {
+        "score": round(prob, 2),
+        "sentiment": sent,
     }
     return jsonify(result_dict)
 
