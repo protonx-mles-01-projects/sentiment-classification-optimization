@@ -19,9 +19,13 @@ CORS(app)
 # Khi client gọi GET. Trả về acc và loss của model
 @app.route('/api/v1/model_info', methods=['GET'])
 def get_model_info():
+    # open trainer_state, get the infomation of last epoch
+    with open('model/trainer_state.json') as file:
+        data = json.load(file)
     result_dict = {
-        "accuracy": 100.0,
-        "loss": 0.0
+        "accuracy": data['log_history'][-1]['eval_accuracy'],
+        "loss": data['log_history'][-1]['eval_loss'],
+        "run_time":  data['log_history'][-1]['eval_runtime']
     }
     return jsonify(result_dict)
 
