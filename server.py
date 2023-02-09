@@ -16,7 +16,7 @@ app = Flask(__name__)
 CORS(app)
 
 # TODO 2: Tạo route /api/v1/model_info
-# Khi client gọi GET. Trả về acc và loss của model
+# Khi client gọi GET. Trả về acc, loss và runtime của model
 @app.route('/api/v1/model_info', methods=['GET'])
 def get_model_info():
     # open trainer_state, get the infomation of last epoch
