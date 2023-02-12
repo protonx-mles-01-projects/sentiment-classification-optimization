@@ -2,6 +2,11 @@ import numpy as np
 import torch
 from transformers import AutoTokenizer
 from constant import CHECK_POINT
+from onnxruntime.quantization import quantize_dynamic, QuantType, quantize_static
+import onnx
+import onnxruntime as ort
+import os
+
 
 def compute_metrics(eval_pred):
     predictions = eval_pred.predictions
@@ -45,7 +50,16 @@ def accuracy_onnx_fn(path, dataset, batch_size=16):
     attention_mask = dataset['attention_mask'].numpy()
     labels = dataset['label'].numpy()
 
-    ort_sess = ort.InferenceSession(path)
+    # ort_sess = ort.InferenceSession(path)
+    options = ort.SessionOptions()
+    options.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
+    ort_sess = ort.InferenceSession(
+        path, sess_options=options, providers=["CPUExecutionProvider"]
+    )
+     
+    # disable session.run() fallback mechanism, it prevents for a reset of the execution provider
+    # session.disable_fallback() 
+
     accuracy = 0.0
     total = len(labels)
     n = 0
@@ -62,3 +76,15 @@ def accuracy_onnx_fn(path, dataset, batch_size=16):
 
     accuracy = (100 * accuracy / total)
     return accuracy
+
+
+def quantize_onnx_model(onnx_model_path, quantized_model_path='model/quantize-model.onnx'):    
+    # onnx_opt_model = onnx.load(onnx_model_path)
+    quantize_dynamic(onnx_model_path,
+                     quantized_model_path,
+                     weight_type=QuantType.QInt8)
+
+
+    print('ONNX full precision model size (MB):', os.path.getsize(onnx_model_path)/(1024*1024))
+    print('ONNX quantized model size (MB):', os.path.getsize(quantized_model_path)/(1024*1024))
+

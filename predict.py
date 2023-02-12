@@ -18,7 +18,14 @@ def onnx_pred_fn(path):
     else:
         print("The model is valid!")
     
-    ort_sess = ort.InferenceSession(path)
+    # ort_sess = ort.InferenceSession(path)
+    options = ort.SessionOptions()
+    options.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
+    ort_sess = ort.InferenceSession(
+        path, sess_options=options, providers=["CPUExecutionProvider"]
+    )
+    # ort_sess.disable_fallback() 
+    
     auto_tokenizer = AutoTokenizer.from_pretrained(CHECK_POINT)
 
     def pred_fn(input):
@@ -73,7 +80,8 @@ if __name__ == "__main__":
 
     text = input("Input text to analyze sentiment: ")
     while text != 'q':
-        sent, prob = classifier(text)[0]['label'], 100*classifier(text)[0]['score']
+        result = classifier(text)
+        sent, prob = result[0]['label'], 100*result[0]['score']
         print(f"{sent} sentiment: {prob:.2f}%")
 
         text = input("Input text to analyze sentiment: ")
