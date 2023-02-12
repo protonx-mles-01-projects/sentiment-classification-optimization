@@ -1,3 +1,4 @@
+from random import shuffle
 from constant import CHECK_POINT
 from datasets import load_dataset, concatenate_datasets
 from transformers import AutoTokenizer
@@ -10,9 +11,8 @@ class Dataset:
 
     def build_dataset(self, test_size=0.2):
         dataset = concatenate_datasets([self.dataset['train'], self.dataset['test']])
-        dataset = dataset.shuffle(seed=42)
 
-        split_dataset = dataset.train_test_split(test_size=test_size, stratify_by_column="label")
+        split_dataset = dataset.train_test_split(test_size=test_size, stratify_by_column="label", shuffle=True, seed=42)
         train_dataset, test_dataset = split_dataset['train'], split_dataset['test']
 
         auto_tokenizer = AutoTokenizer.from_pretrained(CHECK_POINT)

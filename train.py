@@ -33,7 +33,6 @@ if __name__ == "__main__":
     tokenized_train_dataset, tokenized_test_dataset = dataset.build_dataset(test_size=args.test_size)
     
     distlbert_cls = DistilBertForSequenceClassification.from_pretrained(CHECK_POINT, num_labels=2)
-    trainer = Trainer(model=distlbert_cls, train_dataset=tokenized_train_dataset)
 
     training_args = TrainingArguments(
         output_dir=args.output_dir,
