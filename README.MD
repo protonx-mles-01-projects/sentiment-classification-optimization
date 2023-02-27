@@ -32,31 +32,32 @@ Training script:
 
 ```python
 
-python train.py --epochs ${epochs} --input-lang en --target-lang vi --input-path ${path_to_en_text_file} --target-path ${path_to_vi_text_file}
+python train.py --epochs ${epochs} --batch-size ${batch_size} --test-size ${test_size} --learning-rate ${learning_rate} --output-dir ${output_dir} --save-model-dir ${save_model_dir}
 
 ```
-**FIXME**
 
 Example:
 
 ```python
 
-!python train.py --train-folder ${train_folder} --valid-folder ${valid_folder} --num-classes 2 --patch-size 5 --image-size 150 --lr 0.0001 --epochs 200 --num-heads 12 
+python train.py --epochs 2 --batch-size 16 --test-size 0.2 --learning-rate 5e-5 --output-dir ${output_dir} --save-model-dir ${save_model_dir}
 
 ``` 
-**FIXME**
 
 There are some important arguments for the script you should consider when running it:
 
-- `train-folder`: The folder of training data
-- `valid-folder`: The folder of validation data
-- ...
+- `output-dir` (str): The output directory where the model predictions and checkpoints will be written.
+- `save-model-dir` (str): The directory where the model is saved
+- `epochs` (int, , optional, defaults to 2): Total number of training epochs to perform
+- `learning-rate` (float, optional, defaults to 5e-5): The initial learning rate for AdamW optimizer.
+- `batch-size` (int, optional, defaults to 16): The batch size per GPU/TPU core/CPU for training. 
+- `test-size` (float, optinal, defaults to 0.2): Size of the test split represent the proportion of the dataset to include in the test split.
 
 ## III. Predict Process
 
 local:
 ```bash
-python predict.py
+python predict.py --model-path ${model_path}
 ```
 
 remote:
