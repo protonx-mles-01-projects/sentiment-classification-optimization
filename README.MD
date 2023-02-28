@@ -21,8 +21,8 @@ Authors:
 
 Advisors:
 
-Github: https://github.com/bangoc123
-Email: protonxai@gmail.com
+- Github: https://github.com/bangoc123
+- Email: protonxai@gmail.com
 
 ## I.  Set up environment
 - Step 1:
@@ -152,7 +152,7 @@ Quantized distilbert onnx model:
 - Model size:  64.2 MB
 - Runtime: 0.32s / sample
 
-- Note: The runtime testing was only executed on 1.000 samples and performed on a MacBook Pro.
+Note: The runtime testing was only executed on 1.000 samples and performed on a MacBook Pro.
 
 
 
