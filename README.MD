@@ -8,10 +8,21 @@
 
 
 Authors:
-- Github: @NamTran072, @maitrang-ng, @mp1704, @quangle
+
+- Github: https://github.com/quangle
+- Email: lenhatquang1991@gmail.com
+- Github: https://github.com/maitrang-ng
+- Email: maitrang2406@gmail.com
+- Github: https://github.com/NamTran072
+- Email: tranhainam072@gmail.com
+- Github: https://github.com/mp1704
+- Email: pmphuong1704@gmail.com
+
 
 Advisors:
-- Github: bangoc123
+
+Github: https://github.com/bangoc123
+Email: protonxai@gmail.com
 
 ## I.  Set up environment
 - Step 1:
@@ -129,6 +140,19 @@ In Google Cloud, go to Compute Engine, create Instance Template with Container c
 Create new VM Instances or VM Instance Group from above Instance Template, allow both HTTP and HTTPS traffic
 
 ## V. Result and Comparision
+Number of samples: 10.0000
+
+Distlbert model:
+- Validation accuracy:  0.9363
+- Model size:  255.5 MB
+- Runtime: 0.74s / sample
+
+Quantized distilbert onnx model:
+- Validation accuracy:  0.9339
+- Model size:  64.2 MB
+- Runtime: 0.32s / sample
+
+- Note: The runtime testing was only executed on 1.000 samples and performed on a MacBook Pro.
 
 
 
